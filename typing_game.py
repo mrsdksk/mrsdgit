@@ -8,7 +8,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 import sys
 import csv
-from scipy import signal as sig
 import random
 import math
 
@@ -67,8 +66,8 @@ class Window(QtGui.QMainWindow):
         self.level = LEVEL0
         self.getSubWindow()
 
-        self.typing_list = self.getTypinglist()
-        self.typing_list_num = len(self.typing_list)
+        #self.typing_list = self.getTypinglist()
+        #self.typing_list_num = len(self.typing_list)
 
         self.F_finished = 0
         self.old_question = 0
@@ -165,6 +164,10 @@ class Window(QtGui.QMainWindow):
         self.startAction.setShortcut('Ctrl+Space')
         self.startAction.triggered.connect(self.gameStart)
 
+        self.changeLevelAction = QtGui.QAction('&Change level', self)
+        self.changeLevelAction.setShortcut('Ctrl+L')
+        self.changeLevelAction.triggered.connect(self.getSubWindow)
+
         self.resetAction = QtGui.QAction('&Reset', self)
         self.resetAction.setShortcut('Esc')
         self.resetAction.triggered.connect(self.resetDisplay)
@@ -173,6 +176,7 @@ class Window(QtGui.QMainWindow):
         self.fileMenu = menubar.addMenu('&Menu')
         self.fileMenu.addAction(self.startAction)
         self.fileMenu.addAction(self.resetAction)
+        self.fileMenu.addAction(self.changeLevelAction)
         self.fileMenu.addAction(self.exitAction)
     
     def timerEvent(self, event):
@@ -200,6 +204,7 @@ class Window(QtGui.QMainWindow):
         self.gamecount = 0
         self.gametimerbox.setText(str(math.floor(ETM_GAME_TIMER/10)))
         self.startAction.setEnabled(True)
+        self.changeLevelAction.setEnabled(True)
         self.resetScene()
 
     def changeDisplay(self):
@@ -280,6 +285,7 @@ class Window(QtGui.QMainWindow):
         self.changeDisplay()
         self.F_finished = 0
         self.startAction.setEnabled(False)
+        self.changeLevelAction.setEnabled(False)
         self.clrTypos()
         self.clrRightAnswerNum()
 
@@ -301,6 +307,7 @@ class Window(QtGui.QMainWindow):
             self.gamecount = 0
             self.gametimerbox.setText("--")
             self.startAction.setEnabled(True)
+            self.changeLevelAction.setEnabled(True)
             self.resetScene()
             self.showResultWindow()
         else:
@@ -360,6 +367,8 @@ class Window(QtGui.QMainWindow):
     def getSubWindow(self):
         subwindow = SubWindow(self)
         subwindow.show()
+        self.typing_list = self.getTypinglist()
+        self.typing_list_num = len(self.typing_list)
 
     def set_param(self, param):
         self.level = param
